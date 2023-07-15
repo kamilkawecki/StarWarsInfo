@@ -1,6 +1,6 @@
 function ListItem(props) {
   return (
-    <li className="bg-white rounded overflow-hidden">
+    <li className="bg-white rounded overflow-hidden hover:scale-110 transition-all">
       <div>
         <img src={'/LukeSkywalker.jpg'} onError={(e)=>{e.target.onError = null; e.target.src = '/placeholder.png'}} alt="" width="300" height="300" />
       </div>
