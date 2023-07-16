@@ -12,7 +12,7 @@ function Character() {
         <div className="relative overflow-hidden aspect-square sm:aspect-auto sm:h-[350px] sm:max-w-[50%] sm:order-2">
           {imageValid ? (
             <img
-              src={`/images/people/${data.id + 1}.jpg`}
+              src={`images/people/${data.id + 1}.jpg`}
               onError={(e) => {
                 e.target.onError = null;
                 setImageValid(false);
@@ -25,7 +25,7 @@ function Character() {
           ) : (
             <>
               <img
-                src={"/images/people/placeholder.png"}
+                src={"images/people/placeholder.png"}
                 alt="placeholder"
                 width="300"
                 height="300"
