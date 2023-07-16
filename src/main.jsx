@@ -2,18 +2,18 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import List from "./routes/List.jsx";
 import RootLayout from "./routes/RootLayout.jsx";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createHashRouter } from "react-router-dom";
 import Character from "./routes/Character.jsx";
 
 import "./index.css";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
-    path: "/StarWarsInfo",
+    path: "/",
     element: <RootLayout />,
     children: [
-      { path: "/StarWarsInfo", element: <List /> },
-      { path: "/StarWarsInfo/Character/:id", element: <Character /> },
+      { path: "/", element: <List /> },
+      { path: "/character/:id", element: <Character /> },
     ],
   },
 ]);
