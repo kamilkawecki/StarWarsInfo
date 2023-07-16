@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import ListItem from "./ListItem";
+import ListItem from "../components/ListItem"
 
 function List() {
   const [people, setPeople] = useState([]);
