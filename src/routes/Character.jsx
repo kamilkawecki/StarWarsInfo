@@ -9,16 +9,17 @@ function Character() {
 
   const params = useParams();
 
-  useEffect(
-    () => async () => {
+  useEffect(() => {
+    const fetchData = async () => {
       setIsLoading(true);
       const response = await fetch(`https://swapi.dev/api/people/${params.id}`);
       const resData = await response.json();
       setPersonData(resData);
       setIsLoading(false);
-    },
-    [params]
-  );
+    };
+
+    fetchData().catch(console.error);
+  }, [params]);
   return (
     <section className="mx-auto max-w-5xl px-4 lg:px-0 pb-8">
       <div className="bg-gradient-to-b from-zinc-500 to-zinc-900 rounded-md text-white flex flex-col sm:flex-row overflow-hidden">
@@ -50,9 +51,7 @@ function Character() {
           )}
         </div>
         <div className="py-4 px-8 flex flex-col flex-grow items-end sm:order-1">
-          {isLoading && (
-            <Loader />
-          )}
+          {isLoading && <Loader />}
           {!isLoading && (
             <>
               <h2>{personData.name}</h2>
