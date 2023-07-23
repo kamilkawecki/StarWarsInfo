@@ -6,7 +6,7 @@ function ListItem(props) {
   props.person['id'] = props.id;
   return (
     <li className="bg-gradient-to-b from-zinc-500 to-zinc-900 rounded-md overflow-hidden hover:scale-110 transition-all">
-      <Link to={`/Character/${props.id + 1}`} state={props.person}>
+      <Link to={`/Character/${props.id + 1}`}>
         <div className="relative overflow-hidden h-[200px]">
           {imageValid ? (
             <img
