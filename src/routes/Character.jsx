@@ -5,7 +5,7 @@ import Loader from "../components/Loader";
 function Character() {
   const [imageValid, setImageValid] = useState(true);
   const [personData, setPersonData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const params = useParams();
 
@@ -17,7 +17,7 @@ function Character() {
       setPersonData(resData);
       setIsLoading(false);
     },
-    [params.id]
+    [params]
   );
   return (
     <section className="mx-auto max-w-5xl px-4 lg:px-0 pb-8">
