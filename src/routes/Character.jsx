@@ -1,23 +1,36 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import Loader from "../components/Loader";
 
 function Character() {
   const [imageValid, setImageValid] = useState(true);
+  const [personData, setPersonData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const location = useLocation();
-  const data = location.state;
+  const params = useParams();
+
+  useEffect(
+    () => async () => {
+      setIsLoading(true);
+      const response = await fetch(`https://swapi.dev/api/people/${params.id}`);
+      const resData = await response.json();
+      setPersonData(resData);
+      setIsLoading(false);
+    },
+    [params.id]
+  );
   return (
     <section className="mx-auto max-w-5xl px-4 lg:px-0 pb-8">
       <div className="bg-gradient-to-b from-zinc-500 to-zinc-900 rounded-md text-white flex flex-col sm:flex-row overflow-hidden">
         <div className="relative overflow-hidden aspect-square sm:aspect-auto sm:h-[350px] sm:max-w-[50%] sm:order-2">
           {imageValid ? (
             <img
-              src={`images/people/${data.id + 1}.jpg`}
+              src={`images/people/${params.id}.jpg`}
               onError={(e) => {
                 e.target.onError = null;
                 setImageValid(false);
               }}
-              alt={data.name}
+              alt={personData.name}
               width="300"
               height="300"
               className="h-full w-full sm:w-auto object-cover object-top"
@@ -37,14 +50,21 @@ function Character() {
           )}
         </div>
         <div className="py-4 px-8 flex flex-col flex-grow items-end sm:order-1">
-          <h2>{data.name}</h2>
-          <p>Birth year: {data.birth_year}</p>
-          <p>Eye color: {data.eye_color}</p>
-          <p>Gender: {data.gender}</p>
-          <p>Hair color: {data.hair_color}</p>
-          <p>Height: {data.height}</p>
-          <p>Mass: {data.mass}</p>
-          <p>Skin color: {data.skin_color}</p>
+          {isLoading && (
+            <Loader />
+          )}
+          {!isLoading && (
+            <>
+              <h2>{personData.name}</h2>
+              <p>Birth year: {personData.birth_year}</p>
+              <p>Eye color: {personData.eye_color}</p>
+              <p>Gender: {personData.gender}</p>
+              <p>Hair color: {personData.hair_color}</p>
+              <p>Height: {personData.height}</p>
+              <p>Mass: {personData.mass}</p>
+              <p>Skin color: {personData.skin_color}</p>
+            </>
+          )}
 
           {/* to add: films, homeworld, starships, species, vehicles */}
 
