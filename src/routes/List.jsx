@@ -41,11 +41,16 @@ function List() {
       fetchPeople(PeopleApiUrl);
     }
   }
+
+  function getIdFromUrl(url) {
+    const parts = url.split('/');
+    return parts.at(-2);
+  }
   return (
     <section className="mx-auto max-w-5xl px-4 lg:px-0 pb-8">
       <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
         {people.map((person, key) => (
-          <ListItem person={person} key={key} id={key} />
+          <ListItem person={person} key={key} id={getIdFromUrl(person.url)} />
         ))}
       </ul>
       {isLoading && !allLoaded && (

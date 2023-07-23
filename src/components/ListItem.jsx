@@ -6,11 +6,11 @@ function ListItem(props) {
   props.person['id'] = props.id;
   return (
     <li className="bg-gradient-to-b from-zinc-500 to-zinc-900 rounded-md overflow-hidden hover:scale-110 transition-all">
-      <Link to={`/Character/${props.id + 1}`}>
+      <Link to={`/Character/${props.id}`}>
         <div className="relative overflow-hidden h-[200px]">
           {imageValid ? (
             <img
-              src={`images/people/${props.id + 1}.jpg`}
+              src={`images/people/${props.id}.jpg`}
               onError={(e) => {
                 e.target.onError = null;
                 setImageValid(false);
