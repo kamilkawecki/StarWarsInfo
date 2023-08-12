@@ -1,49 +1,57 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import ListItem from "../components/ListItem"
+import { useState, useEffect } from "react";
+import ListItem from "../components/ListItem";
 import Loader from "../components/Loader";
 
 function List() {
   const [people, setPeople] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
-  const [PeopleApiUrl, setPeopleApiUrl] = useState(
-    "https://swapi.dev/api/people"
-  );
-
-  const shouldFetch = useRef(true);
-
-  const fetchPeople = useCallback(
-    async (url) => {
-      setIsLoading(true);
-      const response = await fetch(url);
-      const resData = await response.json();
-      if (resData.next) {
-        setPeopleApiUrl(resData.next);
-      } else {
-        setPeopleApiUrl(null);
-        setAllLoaded(true);
-      }
-      setPeople([...people, ...resData.results]);
-      setIsLoading(false);
-    },
-    [people]
-  );
+  const [PeopleNextApiUrl, setPeopleNextApiUrl] = useState("");
 
   useEffect(() => {
-    if (shouldFetch.current) {
-      fetchPeople(PeopleApiUrl);
-      shouldFetch.current = false;
-    }
-  }, [fetchPeople, PeopleApiUrl]);
+    const abortController = new AbortController();
 
-  function loadMorePeople() {
-    if (PeopleApiUrl) {
-      fetchPeople(PeopleApiUrl);
-    }
+    const fetchPeople = async () => {
+      setIsLoading(true);
+      const response = await fetch("https://swapi.dev/api/people", {
+        signal: abortController.signal,
+      });
+      const resData = await response.json();
+      if (resData.next) {
+        setPeopleNextApiUrl(resData.next);
+      } else {
+        setPeopleNextApiUrl(null);
+        setAllLoaded(true);
+      }
+      setPeople(resData.results);
+      setIsLoading(false);
+    };
+
+    fetchPeople();
+
+    return () => abortController.abort();
+  }, []);
+
+  const loadMorePeopleHandler = () => {
+      const fetchMorePeople = async () => {
+        setIsLoading(true);
+        const response = await fetch(PeopleNextApiUrl);
+        const resData = await response.json();
+        if (resData.next) {
+          setPeopleNextApiUrl(resData.next);
+        } else {
+          setPeopleNextApiUrl(null);
+          setAllLoaded(true);
+        }
+        setPeople((prevPeople) => [...prevPeople, ...resData.results]);
+        setIsLoading(false);
+      };
+
+      fetchMorePeople();
   }
 
   function getIdFromUrl(url) {
-    const parts = url.split('/');
+    const parts = url.split("/");
     return parts.at(-2);
   }
   return (
@@ -53,15 +61,13 @@ function List() {
           <ListItem person={person} key={key} id={getIdFromUrl(person.url)} />
         ))}
       </ul>
-      {isLoading && !allLoaded && (
-      <Loader />
-      )} 
+      {isLoading && !allLoaded && <Loader />}
       {!isLoading && !allLoaded && (
         <button
           type="button"
           className="border-primary border-4 py-2 px-4 rounded-xl text-primary font-bold 
         uppercase mx-auto block transition-all duration-500 hover:text-white hover:border-white"
-          onClick={loadMorePeople}
+          onClick={loadMorePeopleHandler}
         >
           Load more
         </button>
