@@ -1,18 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       backgroundImage: {
-        'main': "linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 1)), url('/src/assets/stars.jpg')"
+        main: "linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 1)), url('/src/assets/stars.jpg')",
       },
       colors: {
-        primary: '#FCDF2B',
+        primary: "#FCDF2B",
+        lightsaberRed: "#ff212e",
       },
     },
   },
   plugins: [],
-}
-
+};
