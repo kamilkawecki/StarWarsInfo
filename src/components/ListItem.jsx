@@ -7,7 +7,7 @@ function ListItem(props) {
   return (
     <li className="bg-gradient-to-b from-zinc-500 to-zinc-900 rounded-md overflow-hidden hover:scale-110 transition-all">
       <Link to={`/${props.category}/${props.id}`}>
-        <div className={`relative overflow-hidden ${props.category === 'films' ? 'h-auto flex justify-center pt-3' : 'h-[200px]'}`}>
+        <div className={`relative overflow-hidden ${props.category === 'films' ? 'h-auto flex justify-center lg:pt-3' : 'h-[200px]'}`}>
           {imageValid ? (
             <img
               src={`images/${props.category}/${props.id}.jpg`}
