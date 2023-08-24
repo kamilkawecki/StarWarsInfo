@@ -71,20 +71,13 @@ function List() {
     fetchMore();
   };
 
-  function getIdFromUrl(url) {
+  const getIdFromUrl = (url) => {
     const parts = url.split("/");
     return parts.at(-2);
-  }
+  };
   return (
     <section className="mx-auto max-w-5xl px-4 lg:px-0 pb-8">
       <div className="flex gap-4 justify-center mb-4">
-        <button
-          disabled={listState.categoryIsLoading}
-          className={`btn ${category === "people" ? "active" : ""}`}
-          onClick={() => setCategory("people")}
-        >
-          People
-        </button>
         <button
           disabled={listState.categoryIsLoading}
           className={`btn ${category === "films" ? "active" : ""}`}
@@ -92,10 +85,21 @@ function List() {
         >
           Films
         </button>
+        <button
+          disabled={listState.categoryIsLoading}
+          className={`btn ${category === "people" ? "active" : ""}`}
+          onClick={() => setCategory("people")}
+        >
+          People
+        </button>
       </div>
 
       {!listState.categoryIsLoading && (
-        <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
+        <ul
+          className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 ${
+            category === "films" ? "lg:grid-cols-3 lg:gap-6" : "lg:grid-cols-5"
+          } gap-4 mb-8`}
+        >
           {listState.list.map((item, key) => (
             <ListItem
               item={item}
@@ -107,11 +111,13 @@ function List() {
         </ul>
       )}
       {(listState.isLoading || listState.categoryIsLoading) && <Loader />}
-      {(!listState.isLoading && !listState.categoryIsLoading) && listState.nextApiUrl && (
-        <button className="btn mx-auto" onClick={loadMoreHandler}>
-          Load more
-        </button>
-      )}
+      {!listState.isLoading &&
+        !listState.categoryIsLoading &&
+        listState.nextApiUrl && (
+          <button className="btn mx-auto" onClick={loadMoreHandler}>
+            Load more
+          </button>
+        )}
     </section>
   );
 }
