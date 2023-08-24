@@ -1,29 +1,27 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import Loader from "../components/Loader";
+import useHttp from "../hooks/http";
 
 function ItemPage() {
   const [imageValid, setImageValid] = useState(true);
   const [itemData, setItemData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const { sendRequest } = useHttp();
+
   const params = useParams();
   const location = useLocation();
   const category = location.pathname.split("/").at(-2);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      const response = await fetch(
-        `https://swapi.dev/api/${category}/${params.id}`
-      );
-      const resData = await response.json();
-      setItemData(resData);
-      setIsLoading(false);
-    };
-
-    fetchData().catch(console.error);
-  }, [params, category]);
+    setIsLoading(true);
+    sendRequest(`https://swapi.dev/api/${category}/${params.id}`)
+      .then((res) => {
+        setItemData(res);
+        setIsLoading(false);
+      }).catch(console.error);
+  }, [params, category, sendRequest]);
 
   const itemParams = (cat) => {
     if (cat === "people") {

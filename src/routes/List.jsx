@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import ListItem from "../components/ListItem";
 import Loader from "../components/Loader";
+import useHttp from "../hooks/http";
 
 const listReducer = (listState, action) => {
   switch (action.type) {
@@ -25,6 +26,8 @@ const listReducer = (listState, action) => {
   }
 };
 
+const categories = ["films", "people"];
+
 function List() {
   const [listState, dispatch] = useReducer(listReducer, {
     list: [],
@@ -32,43 +35,36 @@ function List() {
     isLoading: false,
     categoryIsLoading: false,
   });
+  const { sendRequest } = useHttp();
 
   const [category, setCategory] = useState("films");
 
   useEffect(() => {
     const abortController = new AbortController();
 
-    const fetchData = async () => {
-      dispatch({ type: "INITFETCH" });
-      const response = await fetch(`https://swapi.dev/api/${category}`, {
-        signal: abortController.signal,
-      });
-      const resData = await response.json();
+    dispatch({ type: "INITFETCH" });
+    sendRequest(`https://swapi.dev/api/${category}`, {
+      signal: abortController.signal,
+    }).then((res) => {
       dispatch({
         type: "INITRESPONSE",
-        next: resData.next,
-        results: resData.results,
+        next: res.next,
+        results: res.results,
       });
-    };
-
-    fetchData();
+    });
 
     return () => abortController.abort();
-  }, [category]);
+  }, [category, sendRequest]);
 
   const loadMoreHandler = () => {
-    const fetchMore = async () => {
-      dispatch({ type: "FETCH" });
-      const response = await fetch(listState.nextApiUrl);
-      const resData = await response.json();
+    dispatch({ type: "FETCH" });
+    sendRequest(listState.nextApiUrl).then((res) => {
       dispatch({
         type: "RESPONSE",
-        next: resData.next,
-        results: resData.results,
+        next: res.next,
+        results: res.results,
       });
-    };
-
-    fetchMore();
+    });
   };
 
   const getIdFromUrl = (url) => {
@@ -78,20 +74,16 @@ function List() {
   return (
     <section className="mx-auto max-w-5xl px-4 lg:px-0 pb-8">
       <div className="flex gap-4 justify-center mb-4">
-        <button
-          disabled={listState.categoryIsLoading}
-          className={`btn ${category === "films" ? "active" : ""}`}
-          onClick={() => setCategory("films")}
-        >
-          Films
-        </button>
-        <button
-          disabled={listState.categoryIsLoading}
-          className={`btn ${category === "people" ? "active" : ""}`}
-          onClick={() => setCategory("people")}
-        >
-          People
-        </button>
+        {categories.map((cat, key) => (
+          <button
+            key={key}
+            disabled={listState.categoryIsLoading}
+            className={`btn ${category === cat ? "active" : ""}`}
+            onClick={() => setCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
       </div>
 
       {!listState.categoryIsLoading && (
